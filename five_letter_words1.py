@@ -16,11 +16,14 @@ def load_words():
 
 
 def find_unique_words(words):
-    return sorted(
-        {
-            encode_word(word): word for word in words if len(word) == 5 and len(set(word)) == 5
-        }.items()
-    )
+    codewords = {}
+    unique_words = [word for word in words if len(word) == 5 and len(set(word)) == 5]
+    for word in unique_words:
+        code = encode_word(word)
+        if code not in codewords:
+            codewords[code] = word
+
+    return sorted(codewords.items())
 
 
 def select_words(codewords, index, code):
