@@ -2,7 +2,7 @@ from functools import reduce
 import time
 
 WORDS_FILENAME = "words_alpha.txt"
-OUTPUT_FILENAME = "result.txt"
+OUTPUT_FILENAME = "result1.txt"
 ORD_A = 97
 
 
@@ -31,7 +31,7 @@ def select_words(codewords, index, end_index, code):
         if code & code2:
             continue
 
-        yield ((code | code2), (index2, word2))
+        yield index2, (code | code2, word2)
 
 
 def main():
@@ -52,14 +52,14 @@ def main():
         )
 
         codewords2 = select_words(codewords, index1, num_words - 3, code1)
-        for code2, (index2, word2) in codewords2:
+        for index2, (code2, word2) in codewords2:
             codewords3 = select_words(codewords, index2, num_words - 2, code2)
-            for code3, (index3, word3) in codewords3:
+            for index3, (code3, word3) in codewords3:
                 codewords4 = select_words(codewords, index3, num_words - 1, code3)
-                for code4, (index4, word4) in codewords4:
+                for index4, (code4, word4) in codewords4:
                     codewords5 = select_words(codewords, index4, num_words, code4)
                     for _, (_, word5) in codewords5:
-                        words_found.append(f"{word1} {word2} {word3} {word4} {word5}")
+                        words_found.append(" ".join(sorted((word1, word2, word3, word4, word5))))
 
     print(f"we had {len(words_found)} successful finds!")
     print(f"That took {time.time() - start_time:.3f} seconds")
