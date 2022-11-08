@@ -26,12 +26,12 @@ def find_unique_words(words):
     return sorted(codewords.items())
 
 
-def select_words(codewords, index, code):
-    return [
-        ((code | code2), (index2, word2))
-        for index2, (code2, word2) in enumerate(codewords[index + 1 :], index + 1)
-        if code & code2 == 0
-    ]
+def select_words(codewords, index, end_index, code):
+    for index2, (code2, word2) in enumerate(codewords[index + 1 : end_index], index + 1):
+        if code & code2:
+            continue
+            
+        yield ((code | code2), (index2, word2))
 
 
 def main():
@@ -44,25 +44,25 @@ def main():
     num_words = len(codewords)
     print(f"{num_words} words have a unique set of 5 letters")
 
-    words_found = set()
-    for index1, (code1, word1) in enumerate(codewords[:-1]):
+    words_found = []
+    for index1, (code1, word1) in enumerate(codewords[:-4]):
         print(
             f"Up to {index1} after {time.time() - start_time:.3f} seconds. "
             f"{len(words_found)} found so far."
         )
 
-        codewords2 = select_words(codewords, index1, code1)
+        codewords2 = select_words(codewords, index1, num_words - 3, code1)
         for code2, (index2, word2) in codewords2:
-            codewords3 = select_words(codewords, index2, code2)
+            codewords3 = select_words(codewords, index2, num_words - 2, code2)
             for code3, (index3, word3) in codewords3:
-                codewords4 = select_words(codewords, index3, code3)
+                codewords4 = select_words(codewords, index3, num_words - 1, code3)
                 for code4, (index4, word4) in codewords4:
-                    codewords5 = select_words(codewords, index4, code4)
+                    codewords5 = select_words(codewords, index4, num_words, code4)
                     for _, (_, word5) in codewords5:
-                        words_found.add(" ".join(sorted((word1, word2, word3, word4, word5))))
+                        words_found.append(f"{word1} {word2} {word3} {word4} {word5}")
 
     print(f"we had {len(words_found)} successful finds!")
-    print(f"That took {time.time() - start_time} seconds")
+    print(f"That took {time.time() - start_time:.3f} seconds")
 
     print(f"The results are in {OUTPUT_FILENAME}")
     with open(OUTPUT_FILENAME, "w") as f:
