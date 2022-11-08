@@ -30,7 +30,7 @@ def select_words(codewords, index, end_index, code):
     for index2, (code2, word2) in enumerate(codewords[index + 1 : end_index], index + 1):
         if code & code2:
             continue
-            
+
         yield ((code | code2), (index2, word2))
 
 
